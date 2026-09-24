@@ -1,11 +1,3 @@
-/*
- * JAWABAN PERTANYAAN LATIHAN 6:
- * - Mengapa daftar barang tak dikenal lebih baik dikembalikan kepada pemanggil daripada langsung dicetak dari dalam fungsi:
- *   Menerapkan prinsip Separation of Concerns (pemisahan logika pemrosesan dengan antarmuka tampilan).
- *   Jika fungsi langsung melakukan print, fungsi menjadi kaku dan tidak bisa dipakai ulang (reusable)
- *   apabila nantinya logika ini digunakan pada aplikasi Flutter, web UI, maupun API server.
- */
-
 const katalog = <String, int>{
   'kopi': 8000,
   'teh': 5000,
