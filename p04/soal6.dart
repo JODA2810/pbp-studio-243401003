@@ -32,7 +32,7 @@ void main() {
   Map<String, List<int>> kelas = {
     'Alice': [80, 85, 90],
     'Bob': [70, 75, 80],
-    'Charlie': [], // Daftar nilai kosong
+    'Charlie': [],
     'Diana': [95, 90, 100],
   };
 

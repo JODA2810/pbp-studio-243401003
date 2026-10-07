@@ -22,8 +22,6 @@ Map<String, int> bagiTagihan(int total, List<String> peserta, Map<String, int> d
     totalTerkumpul += bayar;
   }
 
-  // Sisa hasil pembagian bulat dibebankan kepada peserta pertama dalam daftar
-  // karena ia diasumsikan sebagai penanggung jawab utama transaksi.
   int sisa = total - totalTerkumpul;
   if (sisa > 0) {
     hasil[peserta.first] = (hasil[peserta.first] ?? 0) + sisa;
@@ -35,7 +33,7 @@ Map<String, int> bagiTagihan(int total, List<String> peserta, Map<String, int> d
 void main() {
   int totalTagihan = 100000;
   List<String> peserta = ['Alice', 'Bob', 'Charlie'];
-  Map<String, int> diskon = {'Alice': 10, 'Bob': 20}; // Charlie diskon 0%
+  Map<String, int> diskon = {'Alice': 10, 'Bob': 20};
 
   Map<String, int> rincian = bagiTagihan(totalTagihan, peserta, diskon);
   int totalBayaran = rincian.values.fold(0, (sum, val) => sum + val);

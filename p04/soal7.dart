@@ -11,12 +11,12 @@ String? periksaNim(String nim, {int tahunSekarang = 2026}) {
     return 'Empat angka pertama bukan tahun masuk yang valid (harus 2015 - $tahunSekarang)';
   }
 
-  return null; // NIM Sah
+  return null;
 }
 
 void main() {
-  print('2024001 : ${periksaNim('2024001')}'); // Sah -> null
-  print('202401  : ${periksaNim('202401')}');  // Salah panjang
-  print('2024A01 : ${periksaNim('2024A01')}'); // Ada huruf
-  print('2010001 : ${periksaNim('2010001')}'); // Tahun di luar jangkauan
+  print('2024001 : ${periksaNim('2024001')}');
+  print('202401  : ${periksaNim('202401')}');
+  print('2024A01 : ${periksaNim('2024A01')}');
+  print('2010001 : ${periksaNim('2010001')}');
 }

@@ -21,7 +21,7 @@ void main() {
   double uji2 = nilaiAkhir(75, 65); // 69.0 -> C
   double uji3 = nilaiAkhir(30, 40); // 36.0 -> E
 
-  print('Nilai Akhir 1: $uji1 ($huruf(uji1))');
-  print('Nilai Akhir 2: $uji2 ($huruf(uji2))');
-  print('Nilai Akhir 3: $uji3 ($huruf(uji3))');
+  print('Nilai Akhir 1: $uji1 (${huruf(uji1)})');
+  print('Nilai Akhir 2: $uji2 (${huruf(uji2)})');
+  print('Nilai Akhir 3: $uji3 (${huruf(uji3)})');
 }

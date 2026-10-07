@@ -1,6 +1,6 @@
 void main() {
-  final String nama = 'Nama Lengkap Anda';
-  final String nim = '24000000'; // Sesuaikan dengan NIM Anda
+  final String nama = 'Jonathan Surjadjaja';
+  final String nim = '243401003';
   final int angkatan = 2024;
   final bool statusAktif = true;
 

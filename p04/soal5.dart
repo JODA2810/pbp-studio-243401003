@@ -10,7 +10,6 @@ String kartu({
 }
 
 void main() {
-  // Pengujian 4 kombinasi parameter
   print(kartu(nama: 'Budi', nilai: 85, catatan: 'Tingkatkan', tampilkanNilai: true));
   print(kartu(nama: 'Siti', nilai: 90, tampilkanNilai: true));
   print(kartu(nama: 'Andi', nilai: 70, catatan: 'Izin Sakit', tampilkanNilai: false));
