@@ -68,9 +68,30 @@ class GuyubApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Guyub',
-      home: Scaffold(body: Center(child: Text('Guyub'))),
+    return const MaterialApp(title: 'Guyub', home: HalamanDaftar());
+  }
+}
+
+class HalamanDaftar extends StatelessWidget {
+  const HalamanDaftar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Guyub')),
+      body: ListView.builder(
+        itemCount: daftarKartu.length,
+        itemBuilder: (context, i) {
+          final item = daftarKartu[i];
+          return ListTile(
+            title: Text(item.judul),
+            subtitle: Text(
+              '${item.kunci} · ${item.penanggungJawab ?? 'belum ada penanggung jawab'}',
+            ),
+            trailing: Text(item.status),
+          );
+        },
+      ),
     );
   }
 }
