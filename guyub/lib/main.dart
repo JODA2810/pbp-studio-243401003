@@ -57,9 +57,10 @@ const List<ItemBacklog> daftarKartu = [
     jenis: 'bug',
     poin: 2,
     status: 'To Do',
-    penanggungJawab: 'Sekar',
   ),
 ];
+
+const urutanStatus = ['To Do', 'In Progress', 'Review', 'Done'];
 
 void main() => runApp(const GuyubApp());
 
@@ -89,8 +90,66 @@ class HalamanDaftar extends StatelessWidget {
               '${item.kunci} · ${item.penanggungJawab ?? 'belum ada penanggung jawab'}',
             ),
             trailing: Text(item.status),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => DetailKartu(item: item)),
+            ),
           );
         },
+      ),
+    );
+  }
+}
+
+class DetailKartu extends StatefulWidget {
+  const DetailKartu({super.key, required this.item});
+
+  final ItemBacklog item;
+
+  @override
+  State<DetailKartu> createState() => _DetailKartuState();
+}
+
+class _DetailKartuState extends State<DetailKartu> {
+  late String status = widget.item.status;
+
+  @override
+  Widget build(BuildContext context) {
+    final item = widget.item;
+    final i = urutanStatus.indexOf(status);
+    final adaBerikut = i >= 0 && i < urutanStatus.length - 1;
+    final bisaPindah = item.penanggungJawab != null && adaBerikut;
+    final label = adaBerikut
+        ? 'Pindah ke ${urutanStatus[i + 1]}'
+        : 'Sudah Done';
+
+    return Scaffold(
+      appBar: AppBar(title: Text(item.kunci)),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(item.judul, style: Theme.of(context).textTheme.titleLarge),
+            Text('${item.kunci} · ${item.jenis} · ${item.poin} poin'),
+            Text(
+              'Penanggung jawab: ${item.penanggungJawab ?? 'belum ada penanggung jawab'}',
+            ),
+            const SizedBox(height: 16),
+            Text('Status: $status'),
+            const SizedBox(height: 8),
+            ElevatedButton(
+              onPressed: bisaPindah
+                  ? () => setState(() {
+                      status = urutanStatus[i + 1];
+                    })
+                  : null,
+              child: Text(label),
+            ),
+            if (item.penanggungJawab == null)
+              const Text('Kartu tanpa penanggung jawab tidak bisa dipindah.'),
+          ],
+        ),
       ),
     );
   }
