@@ -80,21 +80,44 @@ class HalamanDaftar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Guyub')),
-      body: ListView.builder(
-        itemCount: daftarKartu.length,
-        itemBuilder: (context, i) {
-          final item = daftarKartu[i];
-          return ListTile(
-            title: Text(item.judul),
-            subtitle: Text(
-              '${item.kunci} · ${item.penanggungJawab ?? 'belum ada penanggung jawab'}',
-            ),
-            trailing: Text(item.status),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => DetailKartu(item: item)),
-            ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final daftar = ListView.builder(
+            itemCount: daftarKartu.length,
+            itemBuilder: (context, i) {
+              final item = daftarKartu[i];
+              return ListTile(
+                title: Text(item.judul),
+                subtitle: Text(
+                  '${item.kunci} · ${item.penanggungJawab ?? 'belum ada penanggung jawab'}',
+                ),
+                trailing: Text(item.status),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetailKartu(item: item),
+                  ),
+                ),
+              );
+            },
           );
+
+          if (constraints.maxWidth >= 600) {
+            return Row(
+              children: [
+                Expanded(flex: 1, child: daftar),
+                const VerticalDivider(width: 1),
+                Expanded(
+                  flex: 2,
+                  child: DetailKartu(
+                    item: daftarKartu.first,
+                    tampilAppBar: false,
+                  ),
+                ),
+              ],
+            );
+          }
+          return daftar;
         },
       ),
     );
@@ -102,9 +125,10 @@ class HalamanDaftar extends StatelessWidget {
 }
 
 class DetailKartu extends StatefulWidget {
-  const DetailKartu({super.key, required this.item});
+  const DetailKartu({super.key, required this.item, this.tampilAppBar = true});
 
   final ItemBacklog item;
+  final bool tampilAppBar;
 
   @override
   State<DetailKartu> createState() => _DetailKartuState();
@@ -124,7 +148,7 @@ class _DetailKartuState extends State<DetailKartu> {
         : 'Sudah Done';
 
     return Scaffold(
-      appBar: AppBar(title: Text(item.kunci)),
+      appBar: widget.tampilAppBar ? AppBar(title: Text(item.kunci)) : null,
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
