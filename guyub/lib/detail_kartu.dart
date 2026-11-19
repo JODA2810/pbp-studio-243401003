@@ -41,7 +41,15 @@ class DetailKartu extends StatelessWidget {
                 ), // A4: ganti null.
                 child: Text('Pindah ke $berikutnya'),
               ),
+
             // B1: tombol Selesai ditulis di sini.
+            OutlinedButton(
+              onPressed: () {
+                context.read<PapanModel>().ubahStatus(item.kode, 'Done');
+                Navigator.pop(context, true);
+              },
+              child: const Text('Selesai'),
+            ),
           ],
         ),
       ),
