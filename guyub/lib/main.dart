@@ -145,12 +145,14 @@ class DaftarKartu extends StatelessWidget {
             '${item.kode} · ${item.penanggungJawab ?? 'belum ada penanggung jawab'}',
           ),
           trailing: Text(item.status),
-          onTap: () {
-            Navigator.push(
+          onTap: () async {
+            final selesai = await Navigator.push<bool>(
               context,
               MaterialPageRoute(builder: (context) => DetailKartu(item: item)),
             );
-            // A3: onTap ditulis di sini.
+            if (selesai != true || !context.mounted) return;
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text('${item.judul} selesai')));
           },
           // A3: onTap ditulis di sini.
         );
