@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:guyub/detail_kartu.dart';
 import 'package:provider/provider.dart';
 
 import 'api.dart';
 import 'papan_model.dart';
+import 'isi_papan.dart';
 
 // A1: bungkus MaterialApp di sini.
 void main() {
@@ -54,7 +56,7 @@ class LayarPapan extends StatefulWidget {
 }
 
 class _LayarPapanState extends State<LayarPapan> {
-  late Future<List<ItemBacklog>> muatan = ambilSemuaItem();
+  // late Future<List<ItemBacklog>> muatan = ambilSemuaItem();
 
   // Form kartu baru, lalu pesan menurut kode status.
   Future<void> bukaFormTambah() async {
@@ -97,7 +99,9 @@ class _LayarPapanState extends State<LayarPapan> {
       final kode = await tambahItem(judul.text, int.tryParse(poin.text) ?? 0);
       if (kode == 201) {
         pesan = 'Kartu ditambahkan';
-        setState(() => muatan = ambilSemuaItem());
+        if (!mounted) return;
+        await Provider.of<PapanModel>(context, listen: false).muat();
+        // setState(() => muatan = ambilSemuaItem());
       } else if (kode == 422) {
         pesan = 'Judul wajib diisi dan poin paling kecil 1';
       } else {
@@ -114,18 +118,7 @@ class _LayarPapanState extends State<LayarPapan> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Guyub')),
-      body: FutureBuilder<List<ItemBacklog>>(
-        future: muatan,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text('Gagal memuat: ${snapshot.error}'));
-          }
-          return DaftarKartu(items: snapshot.data!);
-        },
-      ),
+      body: IsiPapan(papan: context.watch<PapanModel>()),
       floatingActionButton: FloatingActionButton(
         onPressed: bukaFormTambah,
         tooltip: 'Tambah kartu',
@@ -152,6 +145,13 @@ class DaftarKartu extends StatelessWidget {
             '${item.kode} · ${item.penanggungJawab ?? 'belum ada penanggung jawab'}',
           ),
           trailing: Text(item.status),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => DetailKartu(item: item)),
+            );
+            // A3: onTap ditulis di sini.
+          },
           // A3: onTap ditulis di sini.
         );
       },
