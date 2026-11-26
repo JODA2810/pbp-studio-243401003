@@ -12,6 +12,19 @@ class DetailKartu extends StatelessWidget {
 
   final ItemBacklog item;
 
+  // Kirim ke server lewat model. Bila gagal, tampilkan pesannya dan kembalikan false.
+  Future<bool> simpan(BuildContext context, String status) async {
+    final pesan = await context.read<PapanModel>().ubahStatus(
+      item.kode,
+      status,
+    );
+    if (pesan != null && context.mounted) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(pesan)));
+    }
+    return pesan == null;
+  }
+
   @override
   Widget build(BuildContext context) {
     context.watch<PapanModel>();
@@ -35,18 +48,14 @@ class DetailKartu extends StatelessWidget {
             Text('Status: ${item.status}'),
             if (berikutnya != null)
               FilledButton(
-                onPressed: () => context.read<PapanModel>().ubahStatus(
-                  item.kode,
-                  berikutnya,
-                ), // A4: ganti null.
+                onPressed: () => simpan(context, berikutnya),
                 child: Text('Pindah ke $berikutnya'),
               ),
-
-            // B1: tombol Selesai ditulis di sini.
             OutlinedButton(
-              onPressed: () {
-                context.read<PapanModel>().ubahStatus(item.kode, 'Done');
-                Navigator.pop(context, true);
+              onPressed: () async {
+                if (await simpan(context, 'Done') && context.mounted) {
+                  Navigator.pop(context, true);
+                }
               },
               child: const Text('Selesai'),
             ),
