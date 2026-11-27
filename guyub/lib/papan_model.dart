@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'dart:async';
+
 import 'api.dart';
 import 'main.dart';
 
@@ -27,6 +29,8 @@ class PapanModel extends ChangeNotifier {
     notifyListeners();
     try {
       _items = await ambil();
+    } on TimeoutException {
+      _pesanError = 'Server belum menjawab, mungkin sedang bangun. Coba lagi.';
     } catch (e) {
       _pesanError = 'Server tidak bisa dihubungi';
     }

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:guyub/detail_kartu.dart';
 import 'package:provider/provider.dart';
 
 import 'api.dart';
-import 'papan_model.dart';
+import 'detail_kartu.dart';
 import 'isi_papan.dart';
+import 'papan_model.dart';
 
-// A1: bungkus MaterialApp di sini.
 void main() {
   runApp(
     ChangeNotifierProvider(
@@ -47,7 +46,6 @@ class ItemBacklog {
   }
 }
 
-// A2: FutureBuilder diganti dengan data dari PapanModel.
 class LayarPapan extends StatefulWidget {
   const LayarPapan({super.key});
 
@@ -56,8 +54,6 @@ class LayarPapan extends StatefulWidget {
 }
 
 class _LayarPapanState extends State<LayarPapan> {
-  // late Future<List<ItemBacklog>> muatan = ambilSemuaItem();
-
   // Form kartu baru, lalu pesan menurut kode status.
   Future<void> bukaFormTambah() async {
     final judul = TextEditingController();
@@ -101,7 +97,6 @@ class _LayarPapanState extends State<LayarPapan> {
         pesan = 'Kartu ditambahkan';
         if (!mounted) return;
         await Provider.of<PapanModel>(context, listen: false).muat();
-        // setState(() => muatan = ambilSemuaItem());
       } else if (kode == 422) {
         pesan = 'Judul wajib diisi dan poin paling kecil 1';
       } else {
@@ -117,7 +112,16 @@ class _LayarPapanState extends State<LayarPapan> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Guyub')),
+      appBar: AppBar(
+        title: const Text('Guyub'),
+        actions: [
+          IconButton(
+            onPressed: context.read<PapanModel>().muat,
+            tooltip: 'Muat ulang dari server',
+            icon: const Icon(Icons.refresh),
+          ),
+        ],
+      ),
       body: IsiPapan(papan: context.watch<PapanModel>()),
       floatingActionButton: FloatingActionButton(
         onPressed: bukaFormTambah,
@@ -154,7 +158,6 @@ class DaftarKartu extends StatelessWidget {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text('${item.judul} selesai')));
           },
-          // A3: onTap ditulis di sini.
         );
       },
     );

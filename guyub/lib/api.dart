@@ -5,10 +5,14 @@ import 'package:http/http.dart' as http;
 import 'main.dart';
 
 const alamatServer = 'https://guyub.joelmedia.my.id';
+// Server gratis bisa tidur dan butuh 30-60 detik untuk bangun. Lewat dari ini, aplikasi menyerah.
+const batasWaktu = Duration(seconds: 20);
 
 // GET /item, lalu setiap objek JSON diubah menjadi ItemBacklog.
 Future<List<ItemBacklog>> ambilSemuaItem() async {
-  final jawaban = await http.get(Uri.parse('$alamatServer/item'));
+  final jawaban = await http
+      .get(Uri.parse('$alamatServer/item'))
+      .timeout(batasWaktu);
   if (jawaban.statusCode != 200) {
     throw Exception('Server menjawab ${jawaban.statusCode}');
   }
@@ -18,11 +22,13 @@ Future<List<ItemBacklog>> ambilSemuaItem() async {
 
 // POST /item. Yang dikembalikan kode status, supaya layar bisa memilih pesannya.
 Future<int> tambahItem(String judul, int poin) async {
-  final jawaban = await http.post(
-    Uri.parse('$alamatServer/item'),
-    headers: {'Content-Type': 'application/json'},
-    body: jsonEncode({'judul': judul, 'poin': poin}),
-  );
+  final jawaban = await http
+      .post(
+        Uri.parse('$alamatServer/item'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'judul': judul, 'poin': poin}),
+      )
+      .timeout(batasWaktu);
   return jawaban.statusCode;
 }
 
@@ -44,10 +50,12 @@ Future<List<ItemBacklog>> ambilContoh() async => [
 
 // PATCH /item/{kode}: hanya status yang dikirim, field lain tetap di server.
 Future<int> ubahStatusDiServer(String kode, String status) async {
-  final jawaban = await http.patch(
-    Uri.parse('$alamatServer/item/$kode'),
-    headers: {'Content-Type': 'application/json'},
-    body: jsonEncode({'status': status}),
-  );
+  final jawaban = await http
+      .patch(
+        Uri.parse('$alamatServer/item/$kode'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'status': status}),
+      )
+      .timeout(batasWaktu);
   return jawaban.statusCode;
 }
