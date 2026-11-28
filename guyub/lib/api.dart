@@ -59,3 +59,15 @@ Future<int> ubahStatusDiServer(String kode, String status) async {
       .timeout(batasWaktu);
   return jawaban.statusCode;
 }
+
+// PATCH /item/{kode}: hanya penanggung_jawab yang dikirim, field lain tetap di server.
+Future<int> ambilKartuDiServer(String kode, String nama) async {
+  final jawaban = await http
+      .patch(
+        Uri.parse('$alamatServer/item/$kode'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'penanggung_jawab': nama}),
+      )
+      .timeout(batasWaktu);
+  return jawaban.statusCode;
+}

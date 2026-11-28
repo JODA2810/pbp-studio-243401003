@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'main.dart';
+import 'nama_saya.dart';
 import 'papan_model.dart';
-
-import 'package:provider/provider.dart';
 
 const urutanStatus = ['To Do', 'In Progress', 'Review', 'Done'];
 
@@ -25,10 +25,34 @@ class DetailKartu extends StatelessWidget {
     return pesan == null;
   }
 
+  // Pegang kartu atas nama pemakai. Nama dibaca dari perangkat.
+  Future<void> sayaKerjakan(BuildContext context) async {
+    final nama = await bacaNama();
+    if (!context.mounted) return;
+    if (nama == null || nama.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Isi nama Anda dulu lewat tombol orang di papan'),
+        ),
+      );
+      return;
+    }
+
+    final pesan = await context.read<PapanModel>().pegangKartu(item.kode, nama);
+    if (!context.mounted) return;
+    if (pesan != null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(pesan)));
+      return;
+    }
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text('${item.judul} dipegang $nama')));
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     context.watch<PapanModel>();
-    // A4: baris context.watch ditulis di sini.
     final posisi = urutanStatus.indexOf(item.status);
     final berikutnya = posisi >= 0 && posisi < urutanStatus.length - 1
         ? urutanStatus[posisi + 1]
@@ -58,6 +82,10 @@ class DetailKartu extends StatelessWidget {
                 }
               },
               child: const Text('Selesai'),
+            ),
+            OutlinedButton(
+              onPressed: () => sayaKerjakan(context),
+              child: const Text('Saya kerjakan'),
             ),
           ],
         ),

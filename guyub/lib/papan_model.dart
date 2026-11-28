@@ -1,19 +1,25 @@
-import 'package:flutter/foundation.dart';
-
 import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 
 import 'api.dart';
 import 'main.dart';
 
 typedef AmbilItem = Future<List<ItemBacklog>> Function();
 typedef KirimStatus = Future<int> Function(String kode, String status);
+typedef KirimNama = Future<int> Function(String kode, String nama);
 
 // Data papan disimpan di sini supaya bisa dipakai beberapa layar.
 class PapanModel extends ChangeNotifier {
-  PapanModel({this.ambil = ambilSemuaItem, this.kirim = ubahStatusDiServer});
+  PapanModel({
+    this.ambil = ambilSemuaItem,
+    this.kirim = ubahStatusDiServer,
+    this.kirimNama = ambilKartuDiServer,
+  });
 
   final AmbilItem ambil;
   final KirimStatus kirim;
+  final KirimNama kirimNama;
 
   List<ItemBacklog> _items = [];
   bool _sedangMuat = false;
@@ -49,6 +55,19 @@ class PapanModel extends ChangeNotifier {
     final item = _items.firstWhere((item) => item.kode == kode);
     item.status = statusBaru;
     notifyListeners();
+    return null;
+  }
+
+  // Pegang kartu: kirim nama ke server, lalu muat ulang papan dari server.
+  // Hasilnya pesan error, atau null bila berhasil.
+  Future<String?> pegangKartu(String kode, String nama) async {
+    try {
+      final kodeJawaban = await kirimNama(kode, nama);
+      if (kodeJawaban != 200) return 'Gagal menyimpan ke server ($kodeJawaban)';
+    } catch (e) {
+      return 'Server tidak bisa dihubungi';
+    }
+    await muat();
     return null;
   }
 }

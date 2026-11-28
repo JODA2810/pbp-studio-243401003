@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import 'api.dart';
 import 'detail_kartu.dart';
 import 'isi_papan.dart';
-import 'papan_model.dart';
 import 'nama_saya.dart';
+import 'papan_model.dart';
 
 void main() {
   runApp(
@@ -110,12 +110,50 @@ class _LayarPapanState extends State<LayarPapan> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(pesan)));
   }
 
+  // Form nama pemakai, disimpan di perangkat.
+  Future<void> bukaFormNama() async {
+    final nama = TextEditingController(text: await bacaNama() ?? '');
+    if (!mounted) return;
+    final simpan = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Nama Anda'),
+        content: TextField(
+          controller: nama,
+          decoration: const InputDecoration(labelText: 'Nama'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Batal'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Simpan'),
+          ),
+        ],
+      ),
+    );
+    if (simpan != true || nama.text.trim().isEmpty) return;
+
+    await simpanNama(nama.text.trim());
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Nama disimpan: ${nama.text.trim()}')),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Guyub'),
         actions: [
+          IconButton(
+            onPressed: bukaFormNama,
+            tooltip: 'Nama saya',
+            icon: const Icon(Icons.person),
+          ),
           IconButton(
             onPressed: context.read<PapanModel>().muat,
             tooltip: 'Muat ulang dari server',
