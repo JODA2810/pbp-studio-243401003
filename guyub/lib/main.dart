@@ -5,6 +5,7 @@ import 'api.dart';
 import 'detail_kartu.dart';
 import 'isi_papan.dart';
 import 'papan_model.dart';
+import 'nama_saya.dart';
 
 void main() {
   runApp(
